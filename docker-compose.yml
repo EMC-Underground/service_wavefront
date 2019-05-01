@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  cadvisor:
+    image: wavefronthq/cadvisor:latest
+    volumes:
+      - /var/run:/var/run
+      - /sys:/sys
+      - /var/lib/docker:/var/lib/docker
+      - /:/rootfs
+      - /dev/disk:/dev/disk
+    command: -storage_driver_wf_source={{.Node.Hostname}} -storage_driver=wavefront -storage_driver_wf_proxy_host=proxy:2878
+  proxy:
+    image: wavefronthq/proxy
+    environment:
+      - WAVEFRONT_URL=${WAVEFRONT_URL}
+      - WAVEFRONT_TOKEN=${WAVEFRONT_TOKEN}
